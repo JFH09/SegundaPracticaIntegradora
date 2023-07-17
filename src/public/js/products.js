@@ -15,6 +15,7 @@ let btnCerrarSesion = document.getElementById("btnCerrarSesion");
 let userNameLogeado = document.getElementById("userName").innerHTML;
 let userEmailLogeado = document.getElementById("userEmail").innerHTML;
 let userIdLogeado = document.getElementById("userId").innerHTML;
+let cartIdLogeado = document.getElementById("cardId").innerHTML;
 let infoUsuario = "";
 window.addEventListener("load", async (event) => {
   console.log("cargooo la pagina....");
@@ -154,6 +155,7 @@ async function getProducts() {
                 <div class="">
                     <p class="card-text">Thumbnail: ${producto.thumbnail} </p>   
                 </div>
+
             </div>
             <div class="col-md-8">
                 <div class="card-body cardEstudiante">
@@ -167,8 +169,15 @@ async function getProducts() {
 
                     <button class="btn btn-primary m-1"  onclick="editarProducto('${producto._id}')">Editar</button>
                     <button class="btn btn-danger m-1" onclick="eliminarProducto('${producto._id}')">Eliminar</button>
+
                 </div>
+
             </div>
+        </div>
+        <div class="row">
+                    
+        <input type="number" class="form-control " id="inputCantProduct${producto._id}"  placeholder="Cantidad Productos Para añadir ">
+        <button id="btnCrearCarritoUsu" class="btn btn-warning" onclick="addToCart('${producto._id}',' ${producto.title}')">Añadir Cantidad del producto al Carrito </button>
         </div>
     </div>
     `;
@@ -506,4 +515,56 @@ function aplicarFiltro() {
   urlFilter = urlFilter + params;
   console.log(urlFilter);
   window.location.replace(urlFilter + "page=1");
+}
+
+async function addToCart(idProduct, product) {
+  let cantidadProducto = document.getElementById(
+    `inputCantProduct${idProduct}`
+  ).value;
+
+  //    /:idCart/:product/:idProduct
+  let idCart = cartIdLogeado.split(">");
+  let urlAux = currentUrl.split("/api");
+  console.log(urlAux[0]);
+  console.log(
+    "entro a agregar producto a carrito...",
+    idCart[1],
+    "id product",
+    idProduct,
+    " product ",
+    product
+  );
+
+  if (cantidadProducto == 0 || cantidadProducto <= 0) {
+    await Swal.fire("Digita valores validos !!!", "", "error");
+  } else {
+    let quantity = { quantity: cantidadProducto };
+
+    await fetch(
+      urlAux[0] + `/api/carts/${idCart[1].trim()}/${product}/${idProduct}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quantity),
+      }
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+      });
+    //socket.emit("productoEditado"); - para cuando tenga que restarle al stock
+    await Swal.fire("Se añadio con exito el producto", "", "success");
+  }
+}
+
+function goToCart() {
+  let idCart = cartIdLogeado.split(">");
+  let urlAux = currentUrl.split("/api");
+  console.log(urlAux[0]);
+  console.log(idCart[1]);
+  let urlCart = urlAux[0] + "/api/carts/" + idCart[1].trim();
+  console.log(urlCart);
+  window.location.replace(urlCart);
 }

@@ -16,14 +16,22 @@
                 <p class="card-text mb-0">Rol: {{user.rol}}</p>
                 <p class="card-text mb-0">Email: <span id="userEmail">{{user.email}}</p>
                 {{!-- <p class="card-text mb-0">Edad: <span id="userEmail">{{user.age}}</p> --}}
-                <p class="card-text mb-0"><small id="userId">UserId: {{user.id}}</small></p>
+                
+                
               </div>
               
             </div>
           </div>
+          <p class="card-text mb-0"><small id="userId">UserId:<br/> {{user.id}}</small></p>
+          <div class="row mb-2">
+            <p class="card-text mb-0 col-8" ><small id="cardId">CartId: <br/> {{user.idCart}}</small></p>
+            <button id="btnCarritoUsu" class="btn btn-info col-3" onclick="goToCart()">Ir al Carrito</button>
+          </div>
+          
+          
           <button id="btnCerrarSesion" class="btn btn-danger">Cerrar Sesión</button>
         </div>
-        {{!-- <button id="btnCrearCarritoUsu" class="btn btn-primary" disabled>Añadir Carrito =  Proximamente (ya se creo la estructura en el modelo de user con referencia a carts )</button> --}}
+        
       </div>
       <div class="paginas">
         {{!-- <app-listado-paginas></app-listado-paginas> --}}

@@ -59,6 +59,10 @@ router.post("/login", passport.authenticate("login"), async (req, res) => {
     id = idUser.split('"');
     console.log(id[1]);
     let infoUsuario = await userModel.findById(id[1]);
+    let idCart = JSON.stringify(infoUsuario.carts[0]._id);
+    console.log("id cart ------", typeof idCart);
+    idCart = idCart.split('"');
+    console.log(idCart[1]);
     console.log(
       "55 sessionRouter - Informacion usuario logueado ->",
       infoUsuario
@@ -70,6 +74,7 @@ router.post("/login", passport.authenticate("login"), async (req, res) => {
       id: id[1],
       age: infoUsuario.age,
       rol: infoUsuario.rol,
+      idCart: idCart[1],
     };
     console.log("User Session en login -> ", req.session.user);
     res.send({ status: "success", payload: req.user });

@@ -5,6 +5,7 @@ import userModel from "../dao/models/user.js";
 import { createHash, isValidPassword } from "../utils.js";
 //import Swal from "sweetalert2/dist/sweetalert2.js";
 import Swal from "sweetalert2";
+import { cartModel } from "../dao/models/cart.model.js";
 //const LocalStrategy = local.localStrategy;
 const initializePassport = () => {
   passport.use(
@@ -12,7 +13,7 @@ const initializePassport = () => {
     new LocalStrategy(
       { passReqToCallback: true, usernameField: "email" },
       async (req, username, password, done) => {
-        const { first_name, last_name, email, age, rol } = req.body;
+        const { first_name, last_name, email, age, rol, carts } = req.body;
         try {
           let user = await userModel.findOne({ email: username });
           if (user) {
@@ -20,6 +21,12 @@ const initializePassport = () => {
 
             return done(null, false);
           }
+
+          console.log("carts-> ", carts);
+
+          let cart = await cartModel.create({});
+          console.log(cart);
+          let cartsAux = [cart];
           let newUser = {
             first_name,
             last_name,
@@ -27,6 +34,7 @@ const initializePassport = () => {
             password: createHash(password),
             age,
             rol,
+            carts: cartsAux,
           };
           let result = await userModel.create(newUser);
           return done(null, result);
